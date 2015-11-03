@@ -4,12 +4,14 @@
 #
 #-------------------------------------------------
 
+QT += network
+
 TARGET = share
 TEMPLATE = lib
 CONFIG += staticlib
 
 QMAKE_CXXFLAGS += -std=c++1y -Wall -Werror -pedantic
-QMAKE_CXXFLAGS_DEBUG += -g -O0
+QMAKE_CXXFLAGS_DEBUG += -O0
 QMAKE_CXXFLAGS_RELEASE += -O2
 
 SOURCES += protocol/message_factory.cpp \
@@ -19,5 +21,6 @@ SOURCES += protocol/message_factory.cpp \
 HEADERS += protocol/message.h \
     protocol/message_factory.h \
     protocol/sender.h \
-    protocol/receiver.h
+    protocol/receiver.h \
+    utils/utils.h
 
