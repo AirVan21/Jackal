@@ -13,8 +13,11 @@ namespace proto
 
 enum message_type
 {
+	/* messages without data */
 	response_ack,
 	response_err,
+
+	/* messages with data */
 	client_server_request,
 	server_client_response,
 	client_worker_request,
