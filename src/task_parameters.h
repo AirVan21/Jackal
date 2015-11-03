@@ -1,0 +1,4 @@
+#ifndef TASK_PARAMETERS_H
+#define TASK_PARAMETERS_H
+
+#endif // TASK_PARAMETERS_H
