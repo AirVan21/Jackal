@@ -10,11 +10,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = client
 TEMPLATE = app
-
+CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    mkvmerge_wrapper.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    mkvmerge_wrapper.h \
+    task_parameters.h
 
 FORMS    += mainwindow.ui
