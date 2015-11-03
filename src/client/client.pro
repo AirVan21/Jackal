@@ -15,6 +15,9 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp
 
+INCLUDEPATH += ../share
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+LIBS += -L../share -lshare
