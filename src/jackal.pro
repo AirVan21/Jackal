@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
-SUBDIRS = client \
+SUBDIRS = share \
+	client \
 	server \
 	worker
 

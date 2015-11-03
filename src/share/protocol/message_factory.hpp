@@ -12,7 +12,7 @@ namespace proto
 template<typename MessageType, typename ... Args>
 MessageType create_message(Args && ... args)
 {
-	return MessageType(std::forward(args)...);
+	return MessageType(std::forward<Args>(args)...);
 }
 
 } // proto

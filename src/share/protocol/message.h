@@ -25,12 +25,10 @@ enum message_type
 class message
 {
 public:
+	explicit message(message_type type);
 	virtual ~message() = default;
 
 	virtual message_type get_type() const;
-
-protected:
-	explicit message(message_type type);
 
 private:
 	message_type type_;
