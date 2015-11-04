@@ -4,13 +4,15 @@
 #include <QVector>
 #include <QHostAddress>
 
+#include "worker_descriptor.h"
+
 class worker_manager
 {
 public:
-    worker_manager();
     void add_new_worker(QHostAddress const & ip, quint16 port);
     void update_worker_load_factor(QHostAddress const & ip, quint16 port, quint32 load_factor);
     QVector<QPair<QHostAddress, quint16> > get_workers();
+
 private:
     QVector<worker_descriptor> workers_;
 };
