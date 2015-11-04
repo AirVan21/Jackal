@@ -15,9 +15,7 @@ class server : public QObject {
     Q_OBJECT
 public:
     explicit server(QObject* parent = 0);
-    void add_new_worker(QHostAddress const & ip, quint16 port);
-    void update_worker_load_factor(QHostAddress const & ip, quint16 port, quint32 load_factor);
-    QVector<QPair<QHostAddress, quint16> > get_workers();
+
 signals:
 
 public slots:
@@ -25,7 +23,6 @@ public slots:
 private:
     QTcpServer* server_;
     static const int port_ = 8080;
-    QVector<worker_descriptor> workers_;
 };
 
 #endif // SERVER_H

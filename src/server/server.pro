@@ -17,12 +17,16 @@ QMAKE_CXXFLAGS_RELEASE += -O2
 
 TEMPLATE = app
 
-INCLUDEPATH += ../share
+INCLUDEPATH += ../
 
 SOURCES += main.cpp \
-    server.cpp
+    server.cpp \
+    worker_descriptor.cpp \
+    worker_manager.cpp
 
 HEADERS += \
-    server.h
+    server.h \
+    worker_descriptor.h \
+    worker_manager.h
 
 LIBS += -L../share -lshare
