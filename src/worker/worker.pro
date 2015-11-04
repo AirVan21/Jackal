@@ -14,8 +14,12 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    ffmpeg_wrapper.cpp
 
-INCLUDEPATH += ../share
+INCLUDEPATH += ../share ../
 
 LIBS += -L../share -lshare
+
+HEADERS += \
+    ffmpeg_wrapper.h
