@@ -21,7 +21,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     mkvmerge_wrapper.cpp \
     client_logic.cpp \
-    network_manager.cpp
+    network_manager.cpp \
+    task_parameter.cpp
 
 INCLUDEPATH += ../
 HEADERS  += mainwindow.h \
