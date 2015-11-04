@@ -86,19 +86,21 @@ private:
 	QVector<QPair<QHostAddress, quint16>> ip_ports_;
 };
 
-class data_message : public message {
+class chunk_message : public message {
 public:
-	data_message(message_type type, char const * data, quint32 size);
-	~data_message();
+	chunk_message(message_type type, qint32 chunk_id, char const * chunk, quint32 size);
+	~chunk_message();
 
 	virtual QByteArray serialize() const override;
 	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
 
-	char const * data() const;
+	quint32 id() const;
+	char const * chunk() const;
 	quint32 size() const;
 
 private:
-	char * const data_;
+	quint32 id_;
+	char * const chunk_;
 	quint32 const size_;
 };
 
