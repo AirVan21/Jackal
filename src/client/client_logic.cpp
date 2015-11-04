@@ -55,7 +55,7 @@ client_logic::~client_logic()
 void client_logic::encodeOn(QString &filename)
 {
     const QString ffmpeg_cmd_              = "ffmpeg";
-    const QString ffmpeg_params_           = " -i %1 -vcodec h264 -r 25 -g 50 -b 500k -acodec mp3 -ar 44100 -ab 32k -s 1080x720 -y %2";
+    const QString ffmpeg_params_           = " -i %1 -vcodec h264 -r 35 -g 35 -b 5M -s 1920x1080 -y %2";
 
      QFile temp_file(filename);
      if (temp_file.open(QIODevice::ReadWrite))
