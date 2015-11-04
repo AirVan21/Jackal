@@ -45,7 +45,7 @@ void socket::recv()
 	read(message_bytes.data(), size);
 
 	if (receiver_)
-		receiver_->receive(data_message::deserialize(message_bytes));
+		receiver_->receive(ip_address(), port(), chunk_message::deserialize(message_bytes));
 }
 
 QHostAddress socket::ip_address() const {

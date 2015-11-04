@@ -17,7 +17,7 @@ class message_receiver
 {
 public:
 	virtual ~message_receiver() = default;
-	virtual void receive(std::unique_ptr<message> && msg) = 0;
+	virtual void receive(QHostAddress const & ip, quint16 port, std::unique_ptr<message> && msg) = 0;
 };
 
 class socket : public QTcpSocket
