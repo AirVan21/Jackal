@@ -11,51 +11,64 @@ namespace share
 namespace net
 {
 
-socket::socket(message_receiver * receiver)
-	: receiver_(receiver)
+socket::socket(QTcpSocket * s, message_receiver * receiver)
+	: socket_(s)
+	, receiver_(receiver)
 {
-	connect(this, SIGNAL(readyRead()), this, SLOT(recv()));
+	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
 }
 
 socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver)
-	: receiver_(receiver)
+	: socket_(std::make_unique<QTcpSocket>())
+	, receiver_(receiver)
 {
-	connectToHost(ip_address, port);
-	waitForConnected();
-	connect(this, SIGNAL(readyRead()), this, SLOT(recv()));
+	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
+	socket_->connectToHost(ip_address, port);
+	socket_->waitForConnected();
 }
 
 void socket::send(message const & msg)
 {
 	QByteArray msg_bytes = msg.serialize();
-	QByteArray packet(4, ' ');
-	utils::to_bytes(msg_bytes.size(), packet.data());
-	packet.append(msg_bytes);
-	write(packet, packet.size());
+	QByteArray packet(4, '\0');
+	quint32 const size = msg_bytes.size();
+	utils::to_bytes(size, packet.data());
+	packet += msg_bytes;
+	if (packet.size() != socket_->write(packet))
+		qDebug() << socket_->errorString();
 }
 
 void socket::recv()
 {
-	QByteArray size_bytes(4, ' ');
-	read(size_bytes.data(), 4);
+	qDebug() << "Socket receiving message";
+	QByteArray size_bytes(4, '\0');
+	socket_->read(size_bytes.data(), 4);
 	quint32 size = 0;
 	utils::from_bytes(size_bytes, size);
 
-	QByteArray message_bytes(size, ' ');
-	read(message_bytes.data(), size);
+	QByteArray message_bytes(size, '\0');
+	socket_->read(message_bytes.data(), size);
 
+	auto msg = number_message::deserialize(message_bytes);
 	if (receiver_)
-		receiver_->receive(ip_address(), port(), chunk_message::deserialize(message_bytes));
+		receiver_->receive(ip_address(), port(), *msg);
+}
+
+bool socket::connectToHost(QHostAddress const & ip, quint16 port)
+{
+	socket_->connectToHost(ip, port);
+	if (!socket_->waitForConnected())
+		return false;
+	return true;
 }
 
 QHostAddress socket::ip_address() const {
-	return peerAddress();
+	return socket_->peerAddress();
 }
 
 quint16 socket::port() const {
-	return peerPort();
+	return socket_->peerPort();
 }
-
 
 } // net
 } // share

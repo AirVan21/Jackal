@@ -6,28 +6,12 @@
 using namespace share :: proto;
 
 server::server(quint16 port)
-	: port_(port)
-{
-	if (!listen(QHostAddress::Any, port_))
-		qDebug() << "Can't start server: " << errorString();
-}
+	: server_base(port)
+{}
 
-server::~server()
+void server::receive(QHostAddress const & ip, quint16 port, message const & msg)
 {
-	for (auto s: worker_sockets_)
-		delete s;
-}
-
-void server::incomingConnection(quintptr descriptor)
-{
-	auto s = new socket(this);
-	s->setSocketDescriptor(descriptor);
-	worker_sockets_.push_back(s);
-}
-
-void server::receive(QHostAddress const & ip, quint16 port, std::unique_ptr<message> && msg)
-{
-	switch (msg->get_type()) {
+	switch (msg.get_type()) {
 		case message_type::client_server_request: {
 //			auto m = static_cast<number_message *>(msg.get());
 			auto workers_ip_ports = workers_manager_.get_workers();
@@ -38,24 +22,17 @@ void server::receive(QHostAddress const & ip, quint16 port, std::unique_ptr<mess
 			break;
 		}
 		case message_type::worker_server_connect: {
-			auto m = static_cast<number_message *>(msg.get());
-			workers_manager_.add_new_worker(ip, m->number());
+			auto m = static_cast<number_message const &>(msg);
+			workers_manager_.add_new_worker(ip, m.number());
+			qDebug() << "New worker arrived";
 			break;
 		}
 		case message_type::worker_server_state_changed: {
-			auto m = static_cast<number_message *>(msg.get());
-			workers_manager_.update_worker_load_factor(ip, port, m->number());
+			auto m = static_cast<number_message const &>(msg);
+			workers_manager_.update_worker_load_factor(ip, port, m.number());
 			break;
 		}
 		default:
 			qDebug() << "Unknown message type. Dropping message";
 	}
-}
-
-socket * server::find_socket(QHostAddress const & ip, quint16 port)
-{
-	for (auto sock: worker_sockets_)
-		if (ip == sock->ip_address() && port == sock->port())
-			return sock;
-	return nullptr;
 }

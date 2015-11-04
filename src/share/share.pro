@@ -19,10 +19,10 @@ INCLUDEPATH = ../
 SOURCES += \
 	protocol/message.cpp \
 	net/socket.cpp \
-#	net/server.cpp
+    net/server_base.cpp
 
 HEADERS += protocol/message.h \
 	protocol/message_factory.hpp \
 	utils/utils.h \
 	net/socket.h \
-#	net/server.h
+    net/server_base.h

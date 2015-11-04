@@ -12,7 +12,7 @@ network_manager::network_manager(client_logic * logic)
 	, socket_(QHostAddress("127.0.0.1"), 8080, nullptr)
 {}
 
-void network_manager::receive(QHostAddress const & /*ip*/, quint16 /*port*/, std::unique_ptr<message> && /*msg*/) {
+void network_manager::receive(QHostAddress const & /*ip*/, quint16 /*port*/, const message & /*msg*/) {
 }
 
 void network_manager::send_workers_request(quint32 task_size)
