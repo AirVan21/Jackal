@@ -7,7 +7,10 @@ using namespace share :: proto;
 
 server::server(quint16 port)
 	: port_(port)
-{}
+{
+	if (!listen(QHostAddress::Any, port_))
+		qDebug() << "Can't start server: " << errorString();
+}
 
 server::~server()
 {
