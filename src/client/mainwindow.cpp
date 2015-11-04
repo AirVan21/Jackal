@@ -2,13 +2,27 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QTextStream>
+
+QTextStream cout(stdout);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->pushButton,SIGNAL(clicked(bool)), this, SLOT(open()));
+//    ui->pathLine;
+    init_comboboxes();
+
+    connect(ui->selectButton,SIGNAL(clicked(bool)), this, SLOT(open()));
+    connect(ui->startButton,SIGNAL(clicked(bool)), this, SLOT(start()));
+    connect(ui->codecComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(set_codec()));
+//    connect(ui->sizeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(set_size()));
+    connect(ui->frameRateComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(set_frame_rate()));
+    connect(ui->audioRateComboBox ,SIGNAL(currentIndexChanged(int)), this, SLOT(set_audio_rate()));
+    connect(ui->frameDensitySpinBox,SIGNAL(valueChanged(int)), this, SLOT(set_frame_density()));
+    connect(ui->videoBitrateComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(set_video_bitrate()));
+    connect(ui->audioBitrateComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(set_audio_bitrate()));
 }
 
 MainWindow::~MainWindow()
@@ -16,22 +30,90 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::open()
+void MainWindow::init_comboboxes()
 {
-//    parameters.file_name.setFileName(QFileDialog::getOpenFileName(this));
+    ui->frameRateComboBox->addItem("25", QVariant(25));
+    ui->frameRateComboBox->addItem("30", QVariant(30));
+    ui->frameRateComboBox->addItem("50", QVariant(50));
 
-//    QFileDialog::getOpenFileName(this, tr("Open File"), "");
-//    QFile file(filen);
-//    if (!file.open(QIODevice::ReadOnly)) {
-//        return;
-//    }
+    ui->sizeComboBox->addItem("1080x720", QVariant(QSize(1080, 720)));
+    ui->sizeComboBox->addItem("1020x1000", QVariant(QSize(1020, 1000)));
+    ui->sizeComboBox->addItem("720x480", QVariant(QSize(720, 480)));
+    
+    ui->audioRateComboBox->addItem("44100", QVariant(44100));
+    ui->audioRateComboBox->addItem("47250", QVariant(47250));
+    ui->audioRateComboBox->addItem("80000", QVariant(80000));
+    
+    ui->codecComboBox->addItem("h264", QVariant(QString("h264")));
+    ui->codecComboBox->addItem("x264", QVariant(QString("x264")));
+    
+    ui->videoBitrateComboBox->addItem("800k", QVariant(800));
+    ui->videoBitrateComboBox->addItem("1150k", QVariant(1150));
+    ui->videoBitrateComboBox->addItem("2500k", QVariant(2500));
+
+    ui->audioBitrateComboBox->addItem("256k", QVariant(256));
+    ui->audioBitrateComboBox->addItem("400k", QVariant(400));
+    ui->audioBitrateComboBox->addItem("1440k", QVariant(1440));
 }
 
-const QString task_parameters::input_file_    = "-i";
-const QString task_parameters::codec_         = "-vcodec";
-const QString task_parameters::frame_rate_    = "-r";
-const QString task_parameters::audio_rate_    = "-ar";
-const QString task_parameters::size_          = "-s";
-const QString task_parameters::frame_density_ = "-g";
-const QString task_parameters::video_bitrate_ = "-b";
-const QString task_parameters::audio_bitrate_ = "-ab";
+void MainWindow::open()
+{
+    parameters.file_name.setFileName(QFileDialog::getOpenFileName(this, tr("Open File"), "/",
+                                                                  tr("Video File (*.mp4 *.avi *.mkv *.mov "
+                                                                     "*.mpeg *.mpeg4 *.wmv)")));
+
+    cout << "FILE OPENED: " << parameters.file_name.fileName();
+
+    QFileInfo file_info(parameters.file_name.fileName());
+    QString path(file_info.filePath());
+
+    ui->pathLine->setText(path);
+}
+
+void MainWindow::start()
+{
+
+}
+
+//void MainWindow::set_size()
+//{
+//    parameters.size = ui->sizeComboBox->itemData(ui->sizeComboBox)
+//}
+
+void MainWindow::set_codec()
+{
+    parameters.codec = ui->codecComboBox->itemData(ui->codecComboBox->currentIndex()).toString();
+    cout << parameters.codec << endl;
+}
+
+void MainWindow::pattern_setter(unsigned int parameter, QComboBox *combobox)
+{
+    parameter = combobox->itemData(combobox->currentIndex()).toInt();
+    cout << parameter << endl;
+}
+
+void MainWindow::set_frame_rate()
+{
+    pattern_setter(parameters.frame_rate, ui->frameRateComboBox);
+}
+
+void MainWindow::set_audio_rate()
+{
+    pattern_setter(parameters.audio_rate, ui->audioRateComboBox);
+}
+
+void MainWindow::set_video_bitrate()
+{
+    pattern_setter(parameters.video_bitrate, ui->videoBitrateComboBox);
+}
+
+void MainWindow::set_audio_bitrate()
+{
+    pattern_setter(parameters.audio_bitrate, ui->audioBitrateComboBox);
+}
+
+void MainWindow::set_frame_density()
+{
+    parameters.frame_density = ui->frameDensitySpinBox->value();
+    cout << parameters.frame_density << endl;
+}
