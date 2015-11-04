@@ -2,6 +2,7 @@
 #define __PROTOCOL_MESSAGE_FACTORY_HPP_
 
 #include <functional>
+#include <memory>
 
 namespace share
 {
@@ -10,9 +11,9 @@ namespace proto
 {
 
 template<typename MessageType, typename ... Args>
-MessageType create_message(Args && ... args)
+std::unique_ptr<MessageType> create_message(Args && ... args)
 {
-	return MessageType(std::forward<Args>(args)...);
+	return std::make_unique<MessageType>(std::forward<Args>(args)...);
 }
 
 } // proto

@@ -1,8 +1,8 @@
 #ifndef __PROTOCOL_SOCKET_WRAPPER_H_
 #define __PROTOCOL_SOCKET_WRAPPER_H_
 
-#include <qt5/QtNetwork/QTcpSocket>
-#include <qt5/QtNetwork/QHostAddress>
+#include <QTcpSocket>
+#include <QHostAddress>
 #include <memory>
 
 #include "message.h"
@@ -21,7 +21,7 @@ public:
 	~socket_wrapper();
 
 	void send(message const & msg);
-	message recv();
+	std::unique_ptr<message> recv();
 
 	QHostAddress ip_address() const;
 	quint16 port() const;
