@@ -34,6 +34,8 @@ class message
 public:
 	virtual ~message() = default;
 
+	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
+
 	virtual message_type get_type() const;
 	virtual QByteArray serialize() const = 0;
 

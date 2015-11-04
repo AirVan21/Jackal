@@ -21,6 +21,33 @@ message::message(message_type type)
 	: type_(type)
 {}
 
+std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
+{
+	quint8 tmp_type = 0;
+	utils::from_bytes(bytes, tmp_type);
+	auto const type = static_cast<message_type>(tmp_type);
+	switch (type) {
+		case response_ack:
+		case response_err:
+			return string_message::deserialize(bytes);
+		case client_server_request:
+		case worker_server_connect:
+		case worker_server_state_changed:
+			return number_message::deserialize(bytes);
+		case server_client_response:
+			return ip_port_array_message::deserialize(bytes);
+		case client_worker_request:
+		case worker_client_response: {
+			return chunk_message::deserialize(bytes);
+		}
+		default:
+			qDebug() << "Unknown message type.";
+			assert(false && "Unknown message type");
+	}
+	return nullptr;
+}
+
+
 string_message::string_message(message_type type, QString const & str)
 	: message(type)
 	, str_(str)

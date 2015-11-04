@@ -49,7 +49,7 @@ void socket::recv()
 	QByteArray message_bytes(size, '\0');
 	socket_->read(message_bytes.data(), size);
 
-	auto msg = number_message::deserialize(message_bytes);
+	auto msg = message::deserialize(message_bytes);
 	if (receiver_)
 		receiver_->receive(ip_address(), port(), *msg);
 }
