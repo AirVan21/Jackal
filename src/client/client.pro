@@ -30,11 +30,7 @@ HEADERS  += mainwindow.h \
     client_logic.h \
     task_parameters.h \
     network_manager.h \
-    mkvmerge_wrapper.cpp.autosave
 
 FORMS    += mainwindow.ui
 
 LIBS += -L../share -lshare
-
-DISTFILES += \
-    client.pro.user
