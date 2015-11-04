@@ -1,9 +1,12 @@
 #ifndef __PROTOCOL_MESSAGE_H_
 #define __PROTOCOL_MESSAGE_H_
 
-#include <cstdint>
-
-using std::uint32_t;
+#include <QtGlobal>
+#include <QString>
+#include <QVector>
+#include <QHostAddress>
+#include <QPair>
+#include <memory>
 
 namespace share
 {
@@ -29,27 +32,74 @@ enum message_type
 class message
 {
 public:
-	explicit message(message_type type);
 	virtual ~message() = default;
 
 	virtual message_type get_type() const;
+	virtual QByteArray serialize() const = 0;
+
+protected:
+	explicit message(message_type type);
 
 private:
 	message_type type_;
 };
 
+class string_message : public message {
+public:
+	string_message(message_type type, QString const & str = "");
+
+	virtual QByteArray serialize() const override;
+	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
+
+	QString const & str() const;
+
+private:
+	QString const str_;
+};
+
+class number_message : public message {
+public:
+	number_message(message_type type, quint32 number);
+
+	virtual QByteArray serialize() const override;
+	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
+
+	quint32 number() const;
+
+private:
+	quint32 const number_;
+};
+
+class ip_port_array_message : public message {
+public:
+	ip_port_array_message(message_type type, QVector<QPair<QHostAddress, quint16>> const & ip_ports)
+		: message(type)
+		, ip_ports_(ip_ports)
+	{}
+
+	virtual QByteArray serialize() const override;
+	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
+
+	QVector<QPair<QHostAddress, quint16> > ip_ports() const;
+
+private:
+	QVector<QPair<QHostAddress, quint16>> ip_ports_;
+};
 
 class data_message : public message {
 public:
-	data_message(message_type type, char const * data, uint32_t size);
+	data_message(message_type type, char const * data, quint32 size);
 	~data_message();
 
+	virtual QByteArray serialize() const override;
+	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
+
 	char const * data() const;
-	uint32_t size() const;
+	quint32 size() const;
 
 private:
 	char * const data_;
-	uint32_t const size_;
+	quint32 const size_;
 };
 
 } // proto
