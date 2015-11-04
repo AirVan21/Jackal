@@ -11,13 +11,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    ui->pathLine;
     init_comboboxes();
 
     connect(ui->selectButton,SIGNAL(clicked(bool)), this, SLOT(open()));
     connect(ui->startButton,SIGNAL(clicked(bool)), this, SLOT(start()));
+
+    connect(ui->pathLine, SIGNAL(textChanged(QString)), this, SLOT(put_path()));
+
     connect(ui->codecComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(set_codec()));
-//    connect(ui->sizeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(set_size()));
+    connect(ui->sizeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(set_size()));
     connect(ui->frameRateComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(set_frame_rate()));
     connect(ui->audioRateComboBox ,SIGNAL(currentIndexChanged(int)), this, SLOT(set_audio_rate()));
     connect(ui->frameDensitySpinBox,SIGNAL(valueChanged(int)), this, SLOT(set_frame_density()));
@@ -56,13 +58,46 @@ void MainWindow::init_comboboxes()
     ui->audioBitrateComboBox->addItem("1440k", QVariant(1440));
 }
 
+// проверка инициализации
+bool MainWindow::checkFileName()
+{
+    if (parameters.file_name.fileName().isEmpty())
+    {
+        cout << "file is not choosen" << endl;
+        return false;
+    }
+    else
+    {
+        QFileInfo checkFile(ui->pathLine->text());
+        if (!(checkFile.exists() && checkFile.isFile()))
+        {
+            cout << "no file is found" << endl;
+            return false;
+        }
+        else
+        {
+            QString ext = checkFile.suffix();
+            // TODO use enum to siplify?
+            if (!(ext == "mp4"   ||
+                  ext == "mkv"   ||
+                  ext == "mov"   ||
+                  ext == "mpeg"  ||
+                  ext == "mpeg4" ||
+                  ext == "wmv"))
+            {
+                cout << "not valid file extension" << endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void MainWindow::open()
 {
     parameters.file_name.setFileName(QFileDialog::getOpenFileName(this, tr("Open File"), "/",
                                                                   tr("Video File (*.mp4 *.avi *.mkv *.mov "
                                                                      "*.mpeg *.mpeg4 *.wmv)")));
-
-    cout << "FILE OPENED: " << parameters.file_name.fileName();
 
     QFileInfo file_info(parameters.file_name.fileName());
     QString path(file_info.filePath());
@@ -70,26 +105,74 @@ void MainWindow::open()
     ui->pathLine->setText(path);
 }
 
-void MainWindow::start()
+void MainWindow::put_path()
 {
+    if (QFile::exists(ui->pathLine->text()))
+    {
+        parameters.file_name.setFileName(ui->pathLine->text());
+    }
+}
+
+void MainWindow::start()
+{       
+    if (!checkFileName())
+        return;
+
+    if (parameters.size.isEmpty())
+    {
+        set_size();
+    }
+    if (parameters.codec.isEmpty())
+    {
+        set_codec();
+    }
+    if (!parameters.frame_rate)
+    {
+        set_frame_rate();
+    }
+    if (!parameters.audio_rate)
+    {
+        set_audio_rate();
+    }
+    if (!parameters.video_bitrate)
+    {
+        set_video_bitrate();
+    }
+    if (!parameters.audio_bitrate)
+    {
+        set_audio_bitrate();
+    }
+    if (!parameters.frame_density)
+    {
+        set_frame_density();
+    }
+
+    cout << "\n     file name: " << parameters.file_name.fileName() << endl;
+    cout << "          size: " << parameters.size.width() << "x" << parameters.size.height() << endl;
+    cout << "         codec: " << parameters.codec << endl;
+    cout << "    frame rate: " << parameters.frame_rate << endl;
+    cout << "    audio rate: " << parameters.audio_rate << endl;
+    cout << " video bitrate: " << parameters.video_bitrate << endl;
+    cout << " audio bitrate: " << parameters.audio_bitrate << "k" << endl;
+    cout << " frame density: " << parameters.frame_density << "k" << endl;
+
+    // Call method to send video file and parameters
 
 }
 
-//void MainWindow::set_size()
-//{
-//    parameters.size = ui->sizeComboBox->itemData(ui->sizeComboBox)
-//}
+void MainWindow::set_size()
+{
+    parameters.size = ui->sizeComboBox->itemData(ui->sizeComboBox->currentIndex()).toSize();
+}
 
 void MainWindow::set_codec()
 {
     parameters.codec = ui->codecComboBox->itemData(ui->codecComboBox->currentIndex()).toString();
-    cout << parameters.codec << endl;
 }
 
-void MainWindow::pattern_setter(unsigned int parameter, QComboBox *combobox)
+void MainWindow::pattern_setter(unsigned int &parameter, QComboBox *combobox)
 {
     parameter = combobox->itemData(combobox->currentIndex()).toInt();
-    cout << parameter << endl;
 }
 
 void MainWindow::set_frame_rate()
@@ -115,5 +198,4 @@ void MainWindow::set_audio_bitrate()
 void MainWindow::set_frame_density()
 {
     parameters.frame_density = ui->frameDensitySpinBox->value();
-    cout << parameters.frame_density << endl;
 }
