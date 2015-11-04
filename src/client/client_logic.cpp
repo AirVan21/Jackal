@@ -9,13 +9,11 @@
 
 using namespace share::net;
 
-client_logic::client_logic(QString filename)
+client_logic::client_logic()
     : manager_(this)
-    , filename_(filename)
+    , filename_("")
     , chunk_amount_(0)
-{
-
-}
+{}
 
 void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_ports)
 {
@@ -55,7 +53,6 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
     }
 }
 
-
 void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, quint32 chunk_id, QByteArray chunk)
 {
     QFile file(filename_);
@@ -82,4 +79,11 @@ void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, 
     }
 }
 
+void client_logic::encode_file(QString const & filename)
+{
+    filename_ = filename;
+    QFile file(filename_);
 
+    if (file.exists())
+        manager_.send_workers_request(file.size());
+}

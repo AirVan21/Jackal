@@ -10,9 +10,13 @@
 class client_logic
 {
 public:
-    client_logic(QString filename);
+    client_logic();
+
+    void encode_file(QString const & filename);
+
     void recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_ports);
     void recieve_chunk(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray chunk);
+
 private:
     network_manager manager_;
     QString filename_;

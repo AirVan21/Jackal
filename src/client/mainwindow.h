@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include "task_parameters.h"
+#include "client_logic.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
 private:
     Ui::MainWindow *ui;
     task_parameters parameters;
+    client_logic logic;
 
     // Fills comboboxes with dates;
     void init_comboboxes();
