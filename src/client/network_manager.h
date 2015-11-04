@@ -3,17 +3,20 @@
 
 #include <QHostAddress>
 #include <QByteArray>
+#include <QVector>
+#include <share/protocol/socket.h>
+#include "client_logic.h"
 
-class chunk_receiver
+class network_manager : public message_receiver
 {
+    Q_OBJECT
 public:
-    virtual void receive_from_net(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray chunk) = 0;
-};
-
-class network_manager
-{
-public:
-    network_manager();
+    explicit network_manager(client_logic* logic = 0);
+    void send_workers_request(quint32 task_size);
+    void send_chunk(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray chunk);
+private:
+    client_logic* logic_;
+    socket* socket_;
 };
 
 #endif // NETWORK_MANAGER_H
