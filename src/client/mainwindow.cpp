@@ -114,6 +114,7 @@ bool MainWindow::checkFileName()
             QString ext = checkFile.suffix();
             // TODO use enum to siplify?
             if (!(ext == "mp4"   ||
+                  ext == "avi"   ||
                   ext == "mkv"   ||
                   ext == "mov"   ||
                   ext == "mpeg"  ||
