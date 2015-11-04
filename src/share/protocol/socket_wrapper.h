@@ -2,6 +2,7 @@
 #define __PROTOCOL_SOCKET_WRAPPER_H_
 
 #include <qt5/QtNetwork/QTcpSocket>
+#include <qt5/QtNetwork/QHostAddress>
 #include <memory>
 
 #include "message.h"
@@ -15,11 +16,15 @@ namespace proto
 class socket_wrapper
 {
 public:
+	socket_wrapper(QHostAddress const & ip_address, quint16 port);
 	explicit socket_wrapper(QTcpSocket * socket);
 	~socket_wrapper();
 
 	void send(message const & msg);
 	message recv();
+
+	QHostAddress ip_address() const;
+	quint16 port() const;
 
 private:
 	std::unique_ptr<QTcpSocket> socket_;

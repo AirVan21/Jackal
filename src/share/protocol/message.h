@@ -1,5 +1,5 @@
-#ifndef __PROTOCOL_MESSAGE_H__
-#define __PROTOCOL_MESSAGE_H__
+#ifndef __PROTOCOL_MESSAGE_H_
+#define __PROTOCOL_MESSAGE_H_
 
 #include <cstdint>
 
@@ -22,6 +22,7 @@ enum message_type
 	server_client_response,
 	client_worker_request,
 	worker_server_connect,
+	worker_server_state_changed,
 	worker_client_response
 };
 
@@ -54,4 +55,4 @@ private:
 } // proto
 } // share
 
-#endif // __PROTOCOL_MESSAGE_H__
+#endif // __PROTOCOL_MESSAGE_H_

@@ -13,8 +13,6 @@ namespace proto
 
 namespace {
 
-using std::uint8_t;
-
 QByteArray message_to_bytes(message const & msg)
 {
 	QByteArray bytes(1, ' ');
@@ -28,6 +26,7 @@ QByteArray message_to_bytes(message const & msg)
 		case message_type::server_client_response:
 		case message_type::client_worker_request:
 		case message_type::worker_server_connect:
+		case message_type::worker_server_state_changed:
 		case message_type::worker_client_response: {
 			auto data_msg = static_cast<data_message const &>(msg);
 			bytes.append(data_msg.data(), data_msg.size());
@@ -39,7 +38,7 @@ QByteArray message_to_bytes(message const & msg)
 
 message bytes_to_message(QByteArray const & bytes) {
 	assert(bytes.isEmpty());
-	uint8_t tmp_type = 0;
+	quint8 tmp_type = 0;
 	utils::from_bytes(bytes.data(), tmp_type);
 	auto const type = static_cast<message_type>(tmp_type);
 	switch (type) {
@@ -62,6 +61,13 @@ message bytes_to_message(QByteArray const & bytes) {
 
 }
 
+socket_wrapper::socket_wrapper(QHostAddress const & ip_address, quint16 port)
+	: socket_(std::make_unique<QTcpSocket>(nullptr))
+{
+	socket_->connectToHost(ip_address, port);
+}
+
+
 socket_wrapper::socket_wrapper(QTcpSocket * socket)
 	: socket_(socket)
 {}
@@ -74,7 +80,7 @@ socket_wrapper::~socket_wrapper()
 void socket_wrapper::send(message const & msg)
 {
 	QByteArray message_bytes = message_to_bytes(msg);
-	uint32_t const size = message_bytes.size();
+	quint32 const size = message_bytes.size();
 	QByteArray packet(4, ' ');
 	utils::to_bytes(size, packet.data());
 
@@ -87,7 +93,7 @@ message socket_wrapper::recv()
 {
 	QByteArray size_bytes(4, ' ');
 	socket_->read(size_bytes.data(), 4);
-	uint64_t size = 0;
+	quint32 size = 0;
 	utils::from_bytes(size_bytes, size);
 
 	QByteArray message_bytes(size, ' ');
@@ -95,6 +101,15 @@ message socket_wrapper::recv()
 
 	return bytes_to_message(message_bytes);
 }
+
+QHostAddress socket_wrapper::ip_address() const {
+	return socket_->peerAddress();
+}
+
+quint16 socket_wrapper::port() const {
+	return socket_->peerPort();
+}
+
 
 } // proto
 } // share
