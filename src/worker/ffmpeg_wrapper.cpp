@@ -36,3 +36,4 @@ QByteArray& ffmpeg_wrapper::encode(QByteArray &data)
 
      return data;
 }
+

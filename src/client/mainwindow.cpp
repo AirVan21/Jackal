@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "client_logic.h"
 
 #include <QFileDialog>
 #include <QTextStream>
+#include <QDebug>
 
 QTextStream cout(stdout);
 
@@ -147,6 +149,7 @@ void MainWindow::start()
         set_frame_density();
     }
 
+    /*
     cout << "\n     file name: " << parameters.file_name.fileName() << endl;
     cout << "          size: " << parameters.size.width() << "x" << parameters.size.height() << endl;
     cout << "         codec: " << parameters.codec << endl;
@@ -155,8 +158,13 @@ void MainWindow::start()
     cout << " video bitrate: " << parameters.video_bitrate << endl;
     cout << " audio bitrate: " << parameters.audio_bitrate << "k" << endl;
     cout << " frame density: " << parameters.frame_density << "k" << endl;
+    */
 
-    // Call method to send video file and parameters
+    QString file_name = parameters.file_name.fileName();
+    client_logic logic(file_name);
+    logic.run();
+
+
 
 }
 

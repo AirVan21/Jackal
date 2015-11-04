@@ -14,7 +14,7 @@ public:
 
 private:
 
-    task_parameters encode_task_;
+    //task_parameters encode_task_;
 
     static const QString ffmpeg_tempfile_name_;
     static const QString ffmpeg_cmd_;

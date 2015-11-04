@@ -1,4 +1,5 @@
 
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2015-11-03T14:35:53
@@ -29,7 +30,6 @@ HEADERS  += mainwindow.h \
     client_logic.h \
     task_parameters.h \
     network_manager.h \
-    mkvmerge_wrapper.cpp.autosave
 
 FORMS    += mainwindow.ui
 
