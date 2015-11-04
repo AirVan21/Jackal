@@ -1,43 +1,40 @@
 #include "server.h"
 #include <share/protocol/message_factory.hpp>
-#include <share/protocol/socket_wrapper.h>
 #include <share/protocol/message.h>
 #include <QtAlgorithms>
 
 using namespace share :: proto;
 
-server::server(QObject* parent) : QObject(parent) {
-    server_ = new QTcpServer(this);
-    connect(server_, SIGNAL(newConnection()), this, SLOT(newConnection()));
-    if (!server_->listen(QHostAddress::Any, port_)) {
-        qDebug() << "Couldn't start server!";
-    } else {
-        qDebug() << "Server started!";
-    }
+server::server(quint16 port)
+	: port_(port)
+{}
+
+server::~server()
+{
+	for (auto s: worker_sockets_)
+		delete s;
 }
 
-void server :: newConnection() {
-    socket_wrapper socket(server_->nextPendingConnection());
-    message msg = socket.recv();
-    switch (msg.get_type()) {
-        case client_server_request : {
-            /* give 5 free workers
-             * their ip adresses and ports
-             */
+void server::incomingConnection(quintptr descriptor)
+{
+	auto s = new socket(this);
+	s->setSocketDescriptor(descriptor);
+	worker_sockets_.push_back(s);
+}
 
-            break;
-        }
-
-        case worker_server_connect : {
-            /* add new worker_wrapper
-             * to free workers
-             */
-
-            break;
-        }
-
-        default: {
-            break;
-        }
-    }
+void server::receive(std::unique_ptr<message> && msg)
+{
+	switch (msg->get_type()) {
+		case message_type::client_server_request:
+			// do client-server stuff
+			break;
+		case message_type::worker_server_connect:
+			// add new worker
+			break;
+		case message_type::worker_server_state_changed:
+			// notify state changed
+			break;
+		default:
+			qDebug() << "Unknown message type. Dropping message";
+	}
 }

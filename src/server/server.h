@@ -7,22 +7,31 @@
 #include <QHostAddress>
 #include <QDebug>
 #include <QVector>
-#include <share/protocol/socket_wrapper.h>
+#include <memory>
 #include <share/protocol/message.h>
-#include "worker_descriptor.h"
+#include <share/protocol/socket.h>
 
-class server : public QObject {
-    Q_OBJECT
+#include "worker_manager.h"
+
+using namespace share::proto;
+
+class server : public QTcpServer, public message_receiver
+{
+	Q_OBJECT
+
 public:
-    explicit server(QObject* parent = 0);
+	explicit server(quint16 port);
+	~server();
 
-signals:
+	virtual void receive(std::unique_ptr<message> && msg) override;
 
-public slots:
-    void newConnection();
+protected slots:
+	void incomingConnection(quintptr descriptor);
+
 private:
-    QTcpServer* server_;
-    static const int port_ = 8080;
+	quint16 const port_;
+	QVector<socket *> worker_sockets_; /// workers sockets
+	worker_manager worker_manager_;
 };
 
 #endif // SERVER_H
