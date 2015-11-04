@@ -5,7 +5,8 @@
 #include <QByteArray>
 #include <QVector>
 #include <share/net/socket.h>
-#include "client_logic.h"
+
+class client_logic;
 
 using namespace share::net;
 

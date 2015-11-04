@@ -3,6 +3,7 @@
 #include <share/net/socket.h>
 
 #include "network_manager.h"
+#include "client_logic.h"
 
 using namespace share::proto;
 
