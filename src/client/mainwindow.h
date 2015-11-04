@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include "task_parameters.h"
-#include "video_type.h"
 
 namespace Ui {
 class MainWindow;
