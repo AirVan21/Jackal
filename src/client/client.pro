@@ -6,6 +6,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,13 +20,20 @@ QMAKE_CXXFLAGS_RELEASE += -O2
 SOURCES += main.cpp\
         mainwindow.cpp \
     mkvmerge_wrapper.cpp \
-    client_logic.cpp
+    client_logic.cpp \
+    network_manager.cpp
 
-INCLUDEPATH += ../share
+INCLUDEPATH += ../
 HEADERS  += mainwindow.h \
     mkvmerge_wrapper.h \
-    client_logic.h
+    client_logic.h \
+    task_parameters.h \
+    network_manager.h \
+    mkvmerge_wrapper.cpp.autosave
 
 FORMS    += mainwindow.ui
 
 LIBS += -L../share -lshare
+
+DISTFILES += \
+    client.pro.user
