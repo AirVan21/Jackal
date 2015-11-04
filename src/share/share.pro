@@ -14,11 +14,12 @@ QMAKE_CXXFLAGS += -std=c++1y -Wall -Werror -pedantic
 QMAKE_CXXFLAGS_DEBUG += -O0
 QMAKE_CXXFLAGS_RELEASE += -O2
 
-SOURCES += protocol/socket_wrapper.cpp \
-    protocol/message.cpp
+SOURCES += \
+    protocol/message.cpp \
+    protocol/socket.cpp
 
 HEADERS += protocol/message.h \
 	protocol/message_factory.hpp \
     utils/utils.h \
-    protocol/socket_wrapper.h
+    protocol/socket.h
 
