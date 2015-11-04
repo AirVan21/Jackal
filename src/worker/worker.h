@@ -4,10 +4,11 @@
 #include <QTcpServer>
 #include <QHostAddress>
 
-#include <share/protocol/socket.h>
+#include <share/net/socket.h>
 #include "ffmpeg_wrapper.h"
 
 using namespace share::proto;
+using namespace share::net;
 
 class worker : public QTcpServer, public message_receiver
 {
@@ -28,7 +29,7 @@ private:
 	socket * find_socket(QHostAddress const & ip, quint16 port);
 
 private:
-	share::proto::socket server_socket_;
+	share::net::socket server_socket_;
 	quint16 port_;
 	QVector<socket *> client_sockets_; /// workers sockets
 	ffmpeg_wrapper coder;

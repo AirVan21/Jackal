@@ -5,13 +5,15 @@
 #include <QHostAddress>
 #include <memory>
 
-#include "message.h"
+#include <share/protocol/message.h>
 
 namespace share
 {
 
-namespace proto
+namespace net
 {
+
+using namespace proto;
 
 class message_receiver
 {
@@ -43,7 +45,7 @@ private:
 	message_receiver * receiver_;
 };
 
-} // proto
+} // net
 } // share
 
 #endif // __PROTOCOL_SOCKET_H_

@@ -9,11 +9,12 @@
 #include <QVector>
 #include <memory>
 #include <share/protocol/message.h>
-#include <share/protocol/socket.h>
+#include <share/net/socket.h>
 
 #include "worker_manager.h"
 
 using namespace share::proto;
+using namespace share::net;
 
 class server : public QTcpServer, public message_receiver
 {

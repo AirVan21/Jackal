@@ -1,14 +1,14 @@
 #include <cassert>
 
-#include "utils/utils.h"
+#include <share/protocol/message_factory.hpp>
+#include <share/utils/utils.h>
 
 #include "socket.h"
-#include "message_factory.hpp"
 
 namespace share
 {
 
-namespace proto
+namespace net
 {
 
 socket::socket(message_receiver * receiver)
@@ -57,5 +57,5 @@ quint16 socket::port() const {
 }
 
 
-} // proto
+} // net
 } // share
