@@ -23,20 +23,25 @@ private:
 
     // Fills comboboxes with dates;
     void init_comboboxes();
+    bool checkFileName();
 
 private slots:
     // Opens video file
     void open();
 
+    // Sets QLineEdit while puts path
+    void put_path();
+
     // Starts file coding
     void start();
 
+    // Sets fields if ComboBox item selected
     void set_codec();
 
-//    void set_size();
+    void set_size();
 
     // Common interface for similar methods
-    void pattern_setter(unsigned int parameter, QComboBox *combobox);
+    void pattern_setter(unsigned int &parameter, QComboBox *combobox);
 
     // Sets fields if ComboBox item selected
     void set_frame_rate();

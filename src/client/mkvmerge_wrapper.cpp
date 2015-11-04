@@ -43,6 +43,8 @@ QString mkvmerge_wrapper::split(const QString &file_name)
 
         return output_dir_name;
     }
+
+    return "";
 }
 
 void mkvmerge_wrapper::merge(QString &target_file_name, QDir &resource_dir)
