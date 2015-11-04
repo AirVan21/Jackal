@@ -11,19 +11,19 @@ namespace share
 namespace proto
 {
 
+socket::socket(message_receiver * receiver)
+	: receiver_(receiver)
+{
+	connect(this, SIGNAL(readyRead()), this, SLOT(recv()));
+}
+
 socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver)
-	: QTcpSocket(nullptr)
-	, receiver_(receiver)
+	: receiver_(receiver)
 {
 	connectToHost(ip_address, port);
 	waitForConnected();
 	connect(this, SIGNAL(readyRead()), this, SLOT(recv()));
 }
-
-//socket::socket(QTcpSocket * s, message_receiver * receiver)
-//	: QTcpSocket(*s)
-//	, receiver_(receiver)
-//{}
 
 void socket::send(message const & msg)
 {

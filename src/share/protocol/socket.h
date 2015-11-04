@@ -25,6 +25,7 @@ class socket : public QTcpSocket
 	Q_OBJECT
 
 public:
+	explicit socket(message_receiver * receiver);
 	socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver = nullptr);
 
 	void send(message const & msg);
