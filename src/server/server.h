@@ -23,15 +23,18 @@ public:
 	explicit server(quint16 port);
 	~server();
 
-	virtual void receive(std::unique_ptr<message> && msg) override;
+	virtual void receive(QHostAddress const & ip, quint16 port, std::unique_ptr<message> && msg) override;
 
 protected slots:
 	void incomingConnection(quintptr descriptor);
 
 private:
+	socket * find_socket(QHostAddress const & ip, quint16 port);
+
+private:
 	quint16 const port_;
 	QVector<socket *> worker_sockets_; /// workers sockets
-	worker_manager worker_manager_;
+	worker_manager workers_manager_;
 };
 
 #endif // SERVER_H
