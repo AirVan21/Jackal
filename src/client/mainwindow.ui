@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Jackel</string>
+   <string>Jackal</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="selectButton">
