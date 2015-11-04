@@ -14,10 +14,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    mkvmerge_wrapper.cpp \
+    client_logic.cpp
 
 INCLUDEPATH += ../share
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    mkvmerge_wrapper.h \
+    client_logic.h
 
 FORMS    += mainwindow.ui
 
