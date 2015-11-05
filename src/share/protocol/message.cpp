@@ -30,7 +30,6 @@ std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
 	switch (type) {
 		case response_ack:
 		case response_err:
-		case client_worker_request:
 			return string_message::deserialize(bytes);
 		case client_server_request:
 		case worker_server_connect:
@@ -38,6 +37,7 @@ std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
 			return number_message::deserialize(bytes);
 		case server_client_response:
 			return ip_port_array_message::deserialize(bytes);
+		case client_worker_request:
 		case worker_client_response: {
 			return chunk_message::deserialize(bytes);
 		}
@@ -74,9 +74,7 @@ std::unique_ptr<message> string_message::deserialize(QByteArray const & bytes)
 //		assert(false && "Message type is not string");
 //	QString str(bytes.data() + 1);
 
-	auto bt = const_cast<QByteArray &>(bytes);
-
-	QDataStream stream(&bt, QIODevice::ReadOnly);
+	QDataStream stream(bytes);
 	quint8 type;
 	stream >> type;
 	QString str;
@@ -170,13 +168,12 @@ chunk_message::chunk_message(message_type type, qint32 chunk_id, QByteArray cons
 
 QByteArray chunk_message::serialize() const
 {
-	QByteArray bytes(5, '\0');
-	auto const type = get_type();
 //	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 //	utils::to_bytes(id_, bytes.data() + 1);
 //	bytes += chunk_;
-	QDataStream stream(bytes);
-	stream << static_cast<quint8>(type) << id_ << chunk_;
+	QByteArray bytes;
+	QDataStream stream(&bytes, QIODevice::WriteOnly);
+	stream << static_cast<quint8>(get_type()) << id_ << chunk_;
 
 	return bytes;
 }
@@ -189,17 +186,14 @@ std::unique_ptr<message> chunk_message::deserialize(QByteArray const & bytes)
 //	auto id = 0;
 //	utils::from_bytes(bytes.data() + 1, id);
 //	QByteArray bt(bytes.data() + 5, bytes.size() - 5);
+//	return create_message<string_message>(static_cast<message_type>(type), str);
 
-	auto bt = const_cast<QByteArray &>(bytes);
-
-	QDataStream stream(&bt, QIODevice::ReadOnly);
+	QDataStream stream(bytes);
 	quint8 type;
 	stream >> type;
 	quint32 id;
 	stream >> id;
 	QByteArray chunk(bytes.data() + 5);
-
-//	return create_message<string_message>(static_cast<message_type>(type), str);
 
 	return create_message<chunk_message>(static_cast<message_type>(type), id, chunk);
 }
