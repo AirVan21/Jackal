@@ -8,8 +8,8 @@
 using namespace share::proto;
 
 network_manager::network_manager(client_logic * logic)
-	: logic_(logic)
-	, socket_(QHostAddress("192.168.0.46"), 8080, this)
+    : logic_(logic)
+    , socket_(nullptr)
 {}
 
 void network_manager::receive(QHostAddress const & ip, quint16 port, const message & msg) {
@@ -32,7 +32,7 @@ void network_manager::receive(QHostAddress const & ip, quint16 port, const messa
 void network_manager::send_workers_request(quint32 task_size)
 {
 	auto msg = create_message<number_message>(client_server_request, task_size);
-	socket_.send(*msg);
+    socket_->send(*msg);
 }
 
 socket * network_manager::find_socket(QHostAddress const & ip, quint16 port)
@@ -52,5 +52,10 @@ void network_manager::send_chunk(QHostAddress const & ip, quint16 port, quint32 
 		workers_sockets_.push_back(sock);
 	}
 	auto msg = create_message<chunk_message>(client_worker_request, chunk_id, chunk);
-	sock->send(*msg);
+    sock->send(*msg);
+}
+
+void network_manager::connect_to_server(const QHostAddress &ip, quint16 port)
+{
+    socket_ = std::make_unique<socket>(ip, port, this);
 }

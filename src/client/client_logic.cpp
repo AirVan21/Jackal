@@ -89,6 +89,11 @@ void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, 
     }
 }
 
+void client_logic::connect_to_server(const QHostAddress &ip, quint16 port)
+{
+    manager_.connect_to_server(ip, port);
+}
+
 void client_logic::encode_file(QString const & filename)
 {
     filename_ = filename;

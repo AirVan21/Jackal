@@ -16,6 +16,7 @@ public:
 
     void recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_ports);
     void recieve_chunk(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray chunk);
+    void connect_to_server(QHostAddress const & ip, quint16 port);
 
 private:
     network_manager manager_;

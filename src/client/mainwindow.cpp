@@ -195,6 +195,7 @@ void MainWindow::start()
     cout << " frame density: " << parameters.frame_density << endl;
     */
 
+    logic.connect_to_server(QHostAddress("192.168.64.86"), 8080);
     logic.encode_file(parameters.file_name.fileName());
 }
 
