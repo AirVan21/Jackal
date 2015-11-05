@@ -25,3 +25,6 @@ To build and run the project you will need:
    libavfilter     6. 11.100 /  6. 11.100  libavresample   3.  0.  0 /  3.  0.  0
    libswscale      4.  0.100 /  4.  0.100  libswresample   2.  0.100 /  2.  0.100
    libpostproc    54.  0.100 / 54.  0.100
+
+To build binaries go into src/ directory and run **qmake jackal.pro && make**. 
+After that in directories src/client src/server and src/worker will be executable files for client, server and worker respectively.
