@@ -13,7 +13,6 @@ void server::receive(QHostAddress const & ip, quint16 port, message const & msg)
 {
 	switch (msg.get_type()) {
 		case message_type::client_server_request: {
-//			auto m = static_cast<number_message *>(msg.get());
 			qDebug() << "New client arrived";
 			auto workers_ip_ports = workers_manager_.get_workers();
 			auto response = create_message<ip_port_array_message>(
