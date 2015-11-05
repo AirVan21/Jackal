@@ -39,6 +39,7 @@ void server_base::socket_disconnected()
 	qDebug() << "Socket" << s->ip_address() << ":" << s->port() << "disconnected.";
 	remove_socket(s);
 	delete s;
+	qDebug() << connections_sockets_.size() << " socket in pool now.";
 }
 
 socket * server_base::find_socket(QHostAddress const & ip, quint16 port)
