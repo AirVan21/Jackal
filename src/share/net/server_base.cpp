@@ -28,8 +28,17 @@ server_base::~server_base()
 void server_base::accept()
 {
 	socket * s = new socket(nextPendingConnection(), this);
+	connect(s, SIGNAL(disconnected()), this, SLOT(socket_disconnected()));
 	qDebug() << "New connection from " << s->ip_address() << ":" << s->port();
 	connections_sockets_.push_back(s);
+}
+
+void server_base::socket_disconnected()
+{
+	auto s = static_cast<socket *>(sender());
+	qDebug() << "Socket" << s->ip_address() << ":" << s->port() << "disconnected.";
+	remove_socket(s);
+	delete s;
 }
 
 socket * server_base::find_socket(QHostAddress const & ip, quint16 port)
@@ -38,6 +47,18 @@ socket * server_base::find_socket(QHostAddress const & ip, quint16 port)
 		if (ip == sock->ip_address() && port == sock->port())
 			return sock;
 	return nullptr;
+}
+
+void server_base::remove_socket(socket * sock)
+{
+	for (auto it = connections_sockets_.begin(); connections_sockets_.end() != it; ++it)
+	{
+		if (*it == sock)
+		{
+			connections_sockets_.erase(it);
+			break;
+		}
+	}
 }
 
 } // net
