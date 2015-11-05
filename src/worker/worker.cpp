@@ -21,6 +21,12 @@ bool worker::connect_to_server(QHostAddress const & ip, quint16 port)
 	return true;
 }
 
+void worker::socket_disconnected(socket *)
+{
+	// do nothing here
+}
+
+
 void worker::receive(QHostAddress const & ip, quint16 port, message const & msg)
 {
 	switch (msg.get_type()) {

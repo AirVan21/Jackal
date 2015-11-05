@@ -20,6 +20,9 @@ public:
 
 	virtual void receive(QHostAddress const & ip, quint16 port, message const & msg) override;
 
+protected:
+	virtual void socket_disconnected(socket * s) override;
+
 private:
 	share::net::socket server_socket_;
 	ffmpeg_wrapper coder;

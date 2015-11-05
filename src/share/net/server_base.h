@@ -30,10 +30,12 @@ public:
 	~server_base();
 
 public slots:
-	virtual void accept();
-	virtual void socket_disconnected();
+	virtual void accept_slot();
+	virtual void disconnected_slot();
 
 protected:
+	virtual void socket_disconnected(socket * s) = 0;
+
 	socket * find_socket(QHostAddress const & ip, quint16 port);
 	void remove_socket(socket * sock);
 

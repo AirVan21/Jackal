@@ -1,8 +1,5 @@
 #include "worker_descriptor.h"
 
-worker_descriptor::worker_descriptor()
-{ }
-
 worker_descriptor::worker_descriptor(const QHostAddress &ip, quint16 port, quint32 load_factor) : ip_(ip), port_(port), load_factor_(load_factor)
 { }
 

@@ -9,12 +9,14 @@
 class worker_manager
 {
 public:
-    void add_new_worker(QHostAddress const & ip, quint16 port);
-    void update_worker_load_factor(QHostAddress const & ip, quint16 port, quint32 load_factor);
-    QVector<QPair<QHostAddress, quint16> > get_workers();
+	quint32 add_new_worker(QHostAddress const & ip, quint16 port);
+	void remove_worker(quint32 id);
+	void update_worker_load_factor(quint32 id, quint32 load_factor);
+	QVector<QPair<QHostAddress, quint16> > get_workers();
 
 private:
-    QVector<worker_descriptor> workers_;
+	QMap<quint32, worker_descriptor> workers_;
+	quint32 worker_id_;
 };
 
 #endif // WORKER_MANAGER_H

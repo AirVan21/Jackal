@@ -6,12 +6,14 @@
 class worker_descriptor
 {
 public:
-    worker_descriptor();
+	worker_descriptor() = default;
     worker_descriptor(QHostAddress const & ip, quint16 port, quint32 load_factor);
-    QHostAddress get_ip() const;
+
+	QHostAddress get_ip() const;
     quint16 get_port() const;
     quint32 get_load_factor() const;
     void set_load_factor(quint32 const & value);
+
 private:
     QHostAddress ip_;
     quint16 port_;

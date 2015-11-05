@@ -19,13 +19,19 @@ using namespace share::net;
 
 class server : public server_base
 {
+	Q_OBJECT
+
 public:
 	explicit server(quint16 port);
 
 	virtual void receive(QHostAddress const & ip, quint16 port, message const & msg) override;
 
+protected:
+	virtual void socket_disconnected(socket * s) override;
+
 private:
 	worker_manager workers_manager_;
+	QMap<socket *, quint32> worker_ids_;
 };
 
-#endif // SERVER_H
+#endif // __SERVER_H_
