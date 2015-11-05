@@ -10,7 +10,7 @@ const QString mkvmerge_wrapper::mkvmerge_parameters_        = " -o -q ";
 const QString mkvmerge_wrapper::mkvsplit_output_dir_suffix_ = "_output";
 const QString mkvmerge_wrapper::mkvmerge_mkv_suffix_        = ".mkv";
 
-const QString mkvmerge_wrapper::mkvmerge_split_             = "3s";
+const QString mkvmerge_wrapper::mkvmerge_split_             = "2s";
 
 mkvmerge_wrapper::mkvmerge_wrapper()
 {

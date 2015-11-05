@@ -13,27 +13,29 @@ namespace net
 
 socket::socket(QTcpSocket * s, message_receiver * receiver)
 	: socket_(s)
+	, need_manualy_delete_socket_(false)
 	, receiver_(receiver)
 {
-	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
-	connect(socket_.get(), SIGNAL(connected()), this, SLOT(connected_slot()));
+	connect(socket_, SIGNAL(readyRead()), this, SLOT(recv()));
+	connect(socket_, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+	connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error_slot(QAbstractSocket::SocketError)));
 }
 
 socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver)
-	: socket_(std::make_unique<QTcpSocket>(nullptr))
-	, receiver_(receiver)
+	: socket(new QTcpSocket(), receiver)
 {
-	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
-	connect(socket_.get(), SIGNAL(connected()), this, SLOT(connected_slot()));
+	need_manualy_delete_socket_ = true;
 	socket_->connectToHost(ip_address, port);
 	socket_->waitForConnected();
 }
 
-void socket::connected_slot()
+socket::~socket()
 {
-	qDebug() << "connected!";
+	if (need_manualy_delete_socket_)
+		delete socket_;
+	else
+		socket_->deleteLater();
 }
-
 
 void socket::send(message const & msg)
 {
@@ -85,7 +87,20 @@ void socket::recv()
 	}
 }
 
-bool socket::connectToHost(QHostAddress const & ip, quint16 port)
+void socket::error_slot(QAbstractSocket::SocketError e)
+{
+	switch (e)
+	{
+		case QAbstractSocket::SocketError::ConnectionRefusedError:
+		case QAbstractSocket::SocketError::RemoteHostClosedError:
+			emit disconnected();
+			break;
+		default:
+			qDebug() << "Error on socket :(";
+	}
+}
+
+bool socket::connect_to_host(QHostAddress const & ip, quint16 port)
 {
 	socket_->connectToHost(ip, port);
 	if (!socket_->waitForConnected())
@@ -93,11 +108,13 @@ bool socket::connectToHost(QHostAddress const & ip, quint16 port)
 	return true;
 }
 
-QHostAddress socket::ip_address() const {
+QHostAddress socket::ip_address() const
+{
 	return socket_->peerAddress();
 }
 
-quint16 socket::port() const {
+quint16 socket::port() const
+{
 	return socket_->peerPort();
 }
 

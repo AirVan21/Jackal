@@ -43,9 +43,11 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
         if (file.open(QIODevice::ReadOnly))
         {
             QByteArray data = file.readAll();
-			manager_.send_chunk(ip, port, chunk_amount_, data);
+            manager_.send_chunk(ip, port, chunk_amount_, data);
+            qDebug() << "Chunk №" << task_id << " send to ip = " << ip.toString() << " (size = " << data.size() << ")";
             ++task_id;
             ++chunk_amount_;
+
         }
 
         next_worker = (next_worker + 1) % ip_ports.size();
@@ -54,7 +56,7 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
     splitter.remove_dir(segments_dir);
 }
 
-void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, quint32 chunk_id, QByteArray chunk)
+void client_logic::recieve_chunk(const QHostAddress & ip, quint16 /*port*/, quint32 chunk_id, QByteArray chunk)
 {
     QFile file(filename_);
     QFileInfo file_info(file);
@@ -67,6 +69,7 @@ void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, 
         target_dir.mkdir(target_dirname);
     }
 
+    qDebug() << "Chunk №" << chunk_id << " recieved from ip = " << ip.toString() << " ( size = " << chunk.size() << ")";
     QString chunk_name = map_[chunk_id];
     QFile chunk_file_dummy(chunk_name);
     QFileInfo chunk_file_info(chunk_file_dummy);
