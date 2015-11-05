@@ -20,7 +20,7 @@ void network_manager::receive(QHostAddress const & ip, quint16 port, const messa
 			break;
 		}
 		case worker_client_response: {
-			auto m = static_cast<chunk_message const &>(msg);
+			chunk_message const & m = static_cast<chunk_message const &>(msg);
 			logic_->recieve_chunk(ip, port, m.id(), m.chunk());
 			break;
 		}
@@ -51,6 +51,6 @@ void network_manager::send_chunk(QHostAddress const & ip, quint16 port, quint32 
 		sock = new socket(ip, port, this);
 		workers_sockets_.push_back(sock);
 	}
-	auto msg = create_message<chunk_message>(client_worker_request, chunk_id, chunk.constData(), chunk.size());
+	auto msg = create_message<chunk_message>(client_worker_request, chunk_id, chunk);
 	sock->send(*msg);
 }

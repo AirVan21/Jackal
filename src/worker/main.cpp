@@ -9,7 +9,8 @@ int main(int argc, char *argv[])
 	QCoreApplication a(argc, argv);
 
 	worker w(9090);
-	w.connect_to_server(QHostAddress("127.0.0.1"), 8080);
+	if (!w.connect_to_server(QHostAddress("192.168.0.46"), 8080))
+		return 1;
 
 	return a.exec();
 }

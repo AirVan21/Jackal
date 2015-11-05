@@ -90,20 +90,18 @@ private:
 
 class chunk_message : public message {
 public:
-	chunk_message(message_type type, qint32 chunk_id, char const * chunk, quint32 size);
-	~chunk_message();
+	chunk_message(message_type type, qint32 chunk_id, QByteArray const & chunk);
 
 	virtual QByteArray serialize() const override;
 	static std::unique_ptr<message> deserialize(QByteArray const & bytes);
 
 	quint32 id() const;
-	char const * chunk() const;
+	QByteArray const & chunk() const;
 	quint32 size() const;
 
 private:
 	quint32 id_;
-	char * const chunk_;
-	quint32 const size_;
+	QByteArray chunk_;
 };
 
 } // proto

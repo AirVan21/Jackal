@@ -27,8 +27,8 @@ server_base::~server_base()
 
 void server_base::accept()
 {
-	qDebug() << "hello from new connection";
 	socket * s = new socket(nextPendingConnection(), this);
+	qDebug() << "New connection from " << s->ip_address() << ":" << s->port();
 	connections_sockets_.push_back(s);
 }
 

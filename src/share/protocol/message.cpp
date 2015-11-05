@@ -152,27 +152,19 @@ QVector<QPair<QHostAddress, quint16>> ip_port_array_message::ip_ports() const
 	return ip_ports_;
 }
 
-chunk_message::chunk_message(message_type type, qint32 chunk_id, char const * chunk, quint32 size)
+chunk_message::chunk_message(message_type type, qint32 chunk_id, QByteArray const & chunk)
 	: message(type)
 	, id_(chunk_id)
-	, chunk_(new char[size])
-	, size_(size)
-{
-	memcpy(chunk_, chunk, size);
-}
-
-chunk_message::~chunk_message()
-{
-	delete[] chunk_;
-}
+	, chunk_(chunk)
+{}
 
 QByteArray chunk_message::serialize() const
 {
-	QByteArray bytes(5 + size_, ' ');
+	QByteArray bytes(5 + size(), ' ');
 	auto const type = get_type();
 	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 	utils::to_bytes(id_, bytes.data() + 1);
-	memcpy(bytes.data() + 5, chunk_, size_);
+
 	return bytes;
 }
 
@@ -183,18 +175,18 @@ std::unique_ptr<message> chunk_message::deserialize(QByteArray const & bytes)
 	auto const type = static_cast<message_type>(tmp_type);
 	auto id = 0;
 	utils::from_bytes(bytes.data() + 1, id);
-	auto const size = bytes.size() - 5;
-	return create_message<chunk_message>(type, id, bytes.data(), size);
+	QByteArray bt(bytes.data() + 5, bytes.size() - 5);
+	return create_message<chunk_message>(type, id, bt);
 }
 
-char const * chunk_message::chunk() const
+QByteArray const & chunk_message::chunk() const
 {
 	return chunk_;
 }
 
 quint32 chunk_message::size() const
 {
-	return size_;
+	return chunk_.size();
 }
 
 quint32 chunk_message::id() const

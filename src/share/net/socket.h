@@ -27,7 +27,7 @@ class socket : public QObject
 	Q_OBJECT
 
 public:
-	explicit socket(QTcpSocket * s, message_receiver * receiver);
+	explicit socket(QTcpSocket * s, message_receiver * receiver = nullptr);
 	socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver = nullptr);
 
 	bool connectToHost(QHostAddress const & ip, quint16 port);
@@ -35,6 +35,11 @@ public:
 
 	QHostAddress ip_address() const;
 	quint16 port() const;
+
+	QString error() const
+	{
+		return socket_->errorString();
+	}
 
 protected slots:
 	void recv();
