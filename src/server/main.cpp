@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	if (argc != 2)
+	if (2 != argc)
 	{
 		usage();
 		return 1;
