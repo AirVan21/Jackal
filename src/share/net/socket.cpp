@@ -40,18 +40,20 @@ void socket::send(message const & msg)
 
 void socket::recv()
 {
-	qDebug() << "Socket receiving message";
-	QByteArray size_bytes(4, '\0');
-	socket_->read(size_bytes.data(), 4);
-	quint32 size = 0;
-	utils::from_bytes(size_bytes, size);
+	while (socket_->bytesAvailable()) {
+		qDebug() << "Socket receiving message";
+		QByteArray size_bytes(4, '\0');
+		socket_->read(size_bytes.data(), 4);
+		quint32 size = 0;
+		utils::from_bytes(size_bytes, size);
 
-	QByteArray message_bytes(size, '\0');
-	socket_->read(message_bytes.data(), size);
+		QByteArray message_bytes(size, '\0');
+		socket_->read(message_bytes.data(), size);
 
-	auto msg = message::deserialize(message_bytes);
-	if (receiver_)
-		receiver_->receive(ip_address(), port(), *msg);
+		auto msg = message::deserialize(message_bytes);
+		if (receiver_)
+			receiver_->receive(ip_address(), port(), *msg);
+	}
 }
 
 bool socket::connectToHost(QHostAddress const & ip, quint16 port)
