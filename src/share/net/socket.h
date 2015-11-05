@@ -29,24 +29,29 @@ class socket : public QObject
 public:
 	explicit socket(QTcpSocket * s, message_receiver * receiver = nullptr);
 	socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver = nullptr);
+	~socket();
 
-	bool connectToHost(QHostAddress const & ip, quint16 port);
+	bool connect_to_host(QHostAddress const & ip, quint16 port);
 	void send(message const & msg);
 
 	QHostAddress ip_address() const;
 	quint16 port() const;
 
-	QString error() const
+	QString error_message() const
 	{
 		return socket_->errorString();
 	}
 
+signals:
+	void disconnected();
+
 protected slots:
 	void recv();
-	void connected_slot();
+	void error_slot(QAbstractSocket::SocketError e);
 
 private:
-	std::unique_ptr<QTcpSocket> socket_;
+	QTcpSocket * socket_;
+	bool need_manualy_delete_socket_;
 	char read_buffer_[512];
 	message_receiver * receiver_;
 };
