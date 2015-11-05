@@ -50,14 +50,13 @@ void socket::recv()
 {
 	if (socket_->bytesAvailable()) {
 		qDebug() << "Socket receiving message";
-		QByteArray size_bytes(4, '\0');
 		if (4 != socket_->read(read_buffer_, 4))
 		{
 			qDebug() << "Failed when reading packet size";
 			return;
 		}
 		quint32 size = 0;
-		utils::from_bytes(size_bytes, size);
+		utils::from_bytes(read_buffer_, size);
 
 		QByteArray packet;
 		while (size > 0) {
