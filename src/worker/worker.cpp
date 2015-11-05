@@ -6,12 +6,14 @@
 worker::worker(quint16 port)
 	: server_base(port)
 	, server_socket_(new QTcpSocket(), this)
-{}
+{
+	qDebug() << "Worker started on port " << port;
+}
 
 bool worker::connect_to_server(QHostAddress const & ip, quint16 port)
 {
-	if (!server_socket_.connectToHost(ip, port)) {
-		qDebug() << "Can't connect to server: " << server_socket_.error();
+	if (!server_socket_.connect_to_host(ip, port)) {
+		qDebug() << "Can't connect to server: " << server_socket_.error_message();
 		return false;
 	}
 	auto msg = create_message<number_message>(message_type::worker_server_connect, port_);
@@ -36,6 +38,6 @@ void worker::receive(QHostAddress const & ip, quint16 port, message const & msg)
 			break;
 		}
 		default:
-			qDebug() << "Unknown message type. Dropping message.";
+			qDebug() << "Worker: Unknown message type: " << msg.get_type() << " Dropping message.";
 	}
 }
