@@ -39,7 +39,10 @@ QString mkvmerge_wrapper::split(const QString &file_name)
         // Assemble split command
         QString cmd = mkvmerge_cmd_ + mkvsplit_parameters_.arg(output_file, mkvmerge_split_, file_info.absoluteFilePath());
         // Run splitting
-        system(cmd.toStdString().c_str());
+        if (!system(cmd.toStdString().c_str()))
+        {
+            qDebug() << "mkvmerge call (split method) caused problem!";
+        }
 
         return output_dir_name;
     }
@@ -63,8 +66,11 @@ void mkvmerge_wrapper::merge(QString &target_file_name, QDir &resource_dir)
     {
         cmd += " +" + list_of_files.at(i).absoluteFilePath();
     }
-    // Run splitting
-    system(cmd.toStdString().c_str());
+    // Run merging
+    if (!system(cmd.toStdString().c_str()))
+    {
+        qDebug() << "mkvmerge call (merge method) caused problem!";
+    }
     // Removes folder
     remove_dir(resource_dir);
 }
