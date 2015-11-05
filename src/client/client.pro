@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     mkvmerge_wrapper.cpp \
     client_logic.cpp \
     network_manager.cpp \
-    task_parameter.cpp
+    task_parameter.cpp \
+    connector.cpp
 
 INCLUDEPATH += ../
 HEADERS  += mainwindow.h \
@@ -30,7 +31,9 @@ HEADERS  += mainwindow.h \
     client_logic.h \
     task_parameters.h \
     network_manager.h \
+    connector.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    connector.ui
 
 LIBS += -L../share -lshare
