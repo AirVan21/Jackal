@@ -84,9 +84,8 @@ void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, 
     {
         QString output_filename = file_info.absolutePath() + QDir::separator() + file_info.baseName() + "_res" + ".mkv";
         mkvmerge_wrapper merger;
-        qDebug() << output_filename;
-        qDebug() << target_dirname;
         merger.merge(output_filename, target_dir);
+        qDebug() << "Coding ended!";
     }
 }
 
