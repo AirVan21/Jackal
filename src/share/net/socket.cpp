@@ -48,7 +48,10 @@ void socket::send(message const & msg)
 
 void socket::recv()
 {
-	if (socket_->bytesAvailable()) {
+	while (socket_->bytesAvailable())
+	{
+		while (4 > socket_->bytesAvailable())
+			socket_->waitForReadyRead();
 		qDebug() << "Socket receiving message";
 		if (4 != socket_->read(read_buffer_, 4))
 		{
@@ -60,7 +63,12 @@ void socket::recv()
 
 		QByteArray packet;
 		while (size > 0) {
+			while (0 == socket_->bytesAvailable())
+				socket_->waitForReadyRead();
 			qint64 need_read = size > 512 ? 512 : size;
+			qint64 const available = socket_->bytesAvailable();
+			need_read = need_read > available ? available : need_read;
+
 			qint64 bytes_read = socket_->read(read_buffer_, need_read);
 			if (bytes_read != need_read)
 			{
