@@ -13,6 +13,7 @@ public:
 
     QString split(const QString &file_name);
     void merge(QString &target_file_name, QDir &resource_dir);
+    bool remove_dir(QDir &delete_dir);
 
 private:
 
@@ -24,6 +25,5 @@ private:
     static const QString mkvmerge_split_;
 
     QString create_output_dir(const QFile &input_file);
-    bool remove_dir(QDir &delete_dir);
 };
 

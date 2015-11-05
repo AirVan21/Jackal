@@ -50,6 +50,8 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
 
         next_worker = (next_worker + 1) % ip_ports.size();
     }
+
+    splitter.remove_dir(segments_dir);
 }
 
 void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, quint32 chunk_id, QByteArray chunk)
@@ -75,6 +77,16 @@ void client_logic::recieve_chunk(const QHostAddress & /*ip*/, quint16 /*port*/, 
     {
         chunk_file.write(chunk);
         chunk_file.close();
+    }
+
+    chunk_amount_--;
+    if (chunk_amount_ == 0)
+    {
+        QString output_filename = file_info.absolutePath() + QDir::separator() + file_info.baseName() + "_res" + ".mkv";
+        mkvmerge_wrapper merger;
+        qDebug() << output_filename;
+        qDebug() << target_dirname;
+        merger.merge(output_filename, target_dir);
     }
 }
 
