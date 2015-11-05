@@ -22,7 +22,11 @@ public:
 	void send_chunk(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray const & chunk);
 
 private:
+	socket * find_socket(QHostAddress const & ip, quint16 port);
+
+private:
 	client_logic * logic_;
+	QVector<socket *> workers_sockets_;
 	socket socket_;
 };
 

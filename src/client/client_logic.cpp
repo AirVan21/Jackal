@@ -29,7 +29,8 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
     quint32 next_worker = 0;
     quint32 task_id = 0; //think about hash
 
-    for (QFileInfo & file_info : segments_dir.entryInfoList())
+	auto file_infos = segments_dir.entryInfoList();
+	for (QFileInfo & file_info : file_infos)
     {
         QString task_path = file_info.absoluteFilePath();
         map_[task_id] = task_path;
@@ -37,14 +38,12 @@ void client_logic::recieve_workers(QVector<QPair<QHostAddress, quint16> > ip_por
         QPair<QHostAddress, quint16> ip_port = ip_ports[next_worker];
         QHostAddress ip = ip_port.first;
         quint16 port = ip_port.second;
-        socket task_socket(ip, port);
 
         QFile file(task_path);
         if (file.open(QIODevice::ReadOnly))
         {
             QByteArray data = file.readAll();
-            auto msg = create_message<chunk_message>(client_worker_request, task_id, data.constData(), data.size());
-            task_socket.send(*msg);
+			manager_.send_chunk(ip, port, chunk_amount_, data);
             ++task_id;
             ++chunk_amount_;
         }

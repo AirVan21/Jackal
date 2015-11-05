@@ -9,7 +9,7 @@ using namespace share::proto;
 
 network_manager::network_manager(client_logic * logic)
 	: logic_(logic)
-	, socket_(QHostAddress("127.0.0.1"), 8080, nullptr)
+	, socket_(QHostAddress("192.168.0.46"), 8080, this)
 {}
 
 void network_manager::receive(QHostAddress const & ip, quint16 port, const message & msg) {
@@ -35,8 +35,22 @@ void network_manager::send_workers_request(quint32 task_size)
 	socket_.send(*msg);
 }
 
+socket * network_manager::find_socket(QHostAddress const & ip, quint16 port)
+{
+	for (auto sock: workers_sockets_)
+		if (ip == sock->ip_address() && port == sock->port())
+			return sock;
+	return nullptr;
+}
+
 void network_manager::send_chunk(QHostAddress const & ip, quint16 port, quint32 chunk_id, QByteArray const & chunk)
 {
-	if (logic_)
-		logic_->recieve_chunk(ip, port, chunk_id, chunk);
+	socket * sock = find_socket(ip, port);
+	if (!sock)
+	{
+		sock = new socket(ip, port, this);
+		workers_sockets_.push_back(sock);
+	}
+	auto msg = create_message<chunk_message>(client_worker_request, chunk_id, chunk.constData(), chunk.size());
+	sock->send(*msg);
 }
