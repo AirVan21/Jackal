@@ -6,9 +6,9 @@
 const QString ffmpeg_wrapper::ffmpeg_tempfile_name_    = "temp.mkv";
 const QString ffmpeg_wrapper::ffmpeg_cmd_              = "ffmpeg";
 const QString ffmpeg_wrapper::ffmpeg_output_filename_  = "output.mkv";
-const QString ffmpeg_wrapper::ffmpeg_params_           = " -loglevel quiet -i %1 -vcodec h264 -r 25 -g 50 -b 500k -acodec mp3 -ar 44100 -ab 32k -s 1080x720 -y %2";
+const QString ffmpeg_wrapper::ffmpeg_params_           = " -i %1 -vcodec h264 -r 30 -g 35 -b 4M -s 1920x1080 -y %2";
 
-//ffmpeg -i input.avi -vcodec h264 -threads 0 -r 25 -g 50 -b 500k -bt 500k -acodec mp3 -ar 44100 -ab 32k out.mp4
+//ffmpeg -i input.avi -vcodec h264 -threads 0 -r 30 -g 35 -b 3M -bt 1M -acodec mp3 -ar 44100 -ab 32k out.mp4
 
 QByteArray& ffmpeg_wrapper::encode(QByteArray &data)
 {
