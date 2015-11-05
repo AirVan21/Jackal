@@ -19,6 +19,7 @@ To build and run the project you will need:
 * g++ v4.9.3 
 * mkvmerge v8.5.2 ('Crosses')
 * ffmpeg (version N-76045-g97be5d4 or later) with componetns:
+   
    libavutil      55.  4.100 / 55.  4.100  libavcodec     57.  6.100 / 57.  6.100
    libavformat    57.  4.100 / 57.  4.100  libavdevice    57.  0.100 / 57.  0.100
    libavfilter     6. 11.100 /  6. 11.100  libavresample   3.  0.  0 /  3.  0.  0
