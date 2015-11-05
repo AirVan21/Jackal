@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void connect_to_server(QHostAddress const & ip, quint16 port);
     ~MainWindow();
 
 private:

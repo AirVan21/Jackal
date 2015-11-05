@@ -8,11 +8,8 @@ Connector::Connector(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->ipComboBox->addItem("8080", QVariant(8080));
-    ui->portComboBox->addItem("192.168.64.86", QVariant(QString("192.168.64.86")));
-
-    connect(ui->ipComboBox,SIGNAL(clicked(bool)), this, SLOT(set_ip()));
-    connect(ui->portComboBox,SIGNAL(clicked(bool)), this, SLOT(set_port()));
+    connect(ui->ipLineEdit, SIGNAL(textChanged(QString)), this, SLOT(set_ip()));
+    connect(ui->portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(set_port()));
     connect(ui->connectPushButton,SIGNAL(clicked(bool)), this, SLOT(openMainWindow()));
 }
 
@@ -23,18 +20,27 @@ Connector::~Connector()
 
 void Connector::set_ip()
 {
-    ip = ui->ipComboBox->itemData(ui->ipComboBox->currentIndex()).toString();
+    server_ip_string_ = ui->ipLineEdit->text();
+    server_ip_ = std::make_unique<QHostAddress>(server_ip_string_);
 }
 
 void Connector::set_port()
 {
-    port = ui->portComboBox->itemData(ui->portComboBox->currentIndex()).toInt();
+    port_ = ui->portLineEdit->text().toShort();
 }
 
 void Connector::openMainWindow()
 {
-    setModal(false);
-    MainWindow *w = new MainWindow(this);
-    w->show();
-    close();
+    if (ui->ipLineEdit->text().isEmpty() || ui->portLineEdit->text().isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        setModal(false);
+        MainWindow *w = new MainWindow(this);
+        w->connect_to_server(*server_ip_, port_);
+        w->show();
+        close();
+    }
 }

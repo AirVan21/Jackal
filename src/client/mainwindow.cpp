@@ -27,6 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->audioBitrateComboBox,SIGNAL(currentIndexChanged(int)), this, SLOT(set_audio_bitrate()));
 }
 
+void MainWindow::connect_to_server(const QHostAddress &ip, quint16 port)
+{
+    logic.connect_to_server(ip, port);
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -184,18 +189,6 @@ void MainWindow::start()
         set_frame_density();
     }
 
-    /*
-    cout << "\n     file name: " << parameters.file_name.fileName() << endl;
-    cout << "          size: " << parameters.size.width() << "x" << parameters.size.height() << endl;
-    cout << "         codec: " << parameters.codec << endl;
-    cout << "    frame rate: " << parameters.frame_rate << endl;
-    cout << "    audio rate: " << parameters.audio_rate << " Hz"<< endl;
-    cout << " video bitrate: " << parameters.video_bitrate << " kb/s" << endl;
-    cout << " audio bitrate: " << parameters.audio_bitrate << " kb/s" << endl;
-    cout << " frame density: " << parameters.frame_density << endl;
-    */
-
-    logic.connect_to_server(QHostAddress("192.168.64.86"), 8080);
     logic.encode_file(parameters.file_name.fileName());
 }
 
