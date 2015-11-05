@@ -43,9 +43,14 @@ public:
 
 protected slots:
 	void recv();
+	void connected_slot();
+
+private:
+	bool read_buffered();
 
 private:
 	std::unique_ptr<QTcpSocket> socket_;
+	char read_buffer_[512];
 	message_receiver * receiver_;
 };
 

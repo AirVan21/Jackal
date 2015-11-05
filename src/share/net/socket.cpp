@@ -16,6 +16,7 @@ socket::socket(QTcpSocket * s, message_receiver * receiver)
 	, receiver_(receiver)
 {
 	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
+	connect(socket_.get(), SIGNAL(connected()), this, SLOT(connected_slot()));
 }
 
 socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver)
@@ -23,9 +24,16 @@ socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver *
 	, receiver_(receiver)
 {
 	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
+	connect(socket_.get(), SIGNAL(connected()), this, SLOT(connected_slot()));
 	socket_->connectToHost(ip_address, port);
 	socket_->waitForConnected();
 }
+
+void socket::connected_slot()
+{
+	qDebug() << "connected!";
+}
+
 
 void socket::send(message const & msg)
 {
@@ -40,17 +48,31 @@ void socket::send(message const & msg)
 
 void socket::recv()
 {
-	while (socket_->bytesAvailable()) {
+	if (socket_->bytesAvailable()) {
 		qDebug() << "Socket receiving message";
 		QByteArray size_bytes(4, '\0');
-		socket_->read(size_bytes.data(), 4);
+		if (4 != socket_->read(read_buffer_, 4))
+		{
+			qDebug() << "Failed when reading packet size";
+			return;
+		}
 		quint32 size = 0;
 		utils::from_bytes(size_bytes, size);
 
-		QByteArray message_bytes(size, '\0');
-		socket_->read(message_bytes.data(), size);
+		QByteArray packet;
+		while (size > 0) {
+			qint64 need_read = size > 512 ? 512 : size;
+			qint64 bytes_read = socket_.read(read_buffer_, need_read);
+			if (bytes_read != need_read)
+			{
+				qDebug() << "Failed when reading packet size";
+				return;
+			}
+			packet.append(read_buffer_, bytes_read);
+			size -= bytes_read;
+		}
 
-		auto msg = message::deserialize(message_bytes);
+		auto msg = message::deserialize(packet);
 		if (receiver_)
 			receiver_->receive(ip_address(), port(), *msg);
 	}
@@ -62,6 +84,11 @@ bool socket::connectToHost(QHostAddress const & ip, quint16 port)
 	if (!socket_->waitForConnected())
 		return false;
 	return true;
+}
+
+bool socket::read_buffered()
+{
+
 }
 
 QHostAddress socket::ip_address() const {

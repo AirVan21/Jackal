@@ -168,9 +168,6 @@ chunk_message::chunk_message(message_type type, qint32 chunk_id, QByteArray cons
 
 QByteArray chunk_message::serialize() const
 {
-//	utils::to_bytes(static_cast<quint8>(type), bytes.data());
-//	utils::to_bytes(id_, bytes.data() + 1);
-//	bytes += chunk_;
 	QByteArray bytes;
 	QDataStream stream(&bytes, QIODevice::WriteOnly);
 	stream << static_cast<quint8>(get_type()) << id_ << chunk_;
@@ -180,20 +177,15 @@ QByteArray chunk_message::serialize() const
 
 std::unique_ptr<message> chunk_message::deserialize(QByteArray const & bytes)
 {
-//	quint8 tmp_type = 0;
-//	utils::from_bytes(bytes.data(), tmp_type);
-//	auto const type = static_cast<message_type>(tmp_type);
-//	auto id = 0;
-//	utils::from_bytes(bytes.data() + 1, id);
-//	QByteArray bt(bytes.data() + 5, bytes.size() - 5);
-//	return create_message<string_message>(static_cast<message_type>(type), str);
-
 	QDataStream stream(bytes);
 	quint8 type;
 	stream >> type;
 	quint32 id;
 	stream >> id;
-	QByteArray chunk(bytes.data() + 5);
+	quint32 size = bytes.size();
+	qDebug() << size;
+	QByteArray chunk(bytes.size() - 5, '\0');
+	stream.readRawData(chunk.data(), bytes.size() - 5);
 
 	return create_message<chunk_message>(static_cast<message_type>(type), id, chunk);
 }
