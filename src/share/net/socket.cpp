@@ -62,7 +62,7 @@ void socket::recv()
 		QByteArray packet;
 		while (size > 0) {
 			qint64 need_read = size > 512 ? 512 : size;
-			qint64 bytes_read = socket_.read(read_buffer_, need_read);
+			qint64 bytes_read = socket_->read(read_buffer_, need_read);
 			if (bytes_read != need_read)
 			{
 				qDebug() << "Failed when reading packet size";
@@ -84,11 +84,6 @@ bool socket::connectToHost(QHostAddress const & ip, quint16 port)
 	if (!socket_->waitForConnected())
 		return false;
 	return true;
-}
-
-bool socket::read_buffered()
-{
-
 }
 
 QHostAddress socket::ip_address() const {
