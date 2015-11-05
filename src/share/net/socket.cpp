@@ -89,6 +89,7 @@ void socket::recv()
 
 void socket::error_slot(QAbstractSocket::SocketError e)
 {
+	QTcpSocket * s = static_cast<QTcpSocket>(sender());
 	switch (e)
 	{
 		case QAbstractSocket::SocketError::ConnectionRefusedError:
@@ -96,7 +97,7 @@ void socket::error_slot(QAbstractSocket::SocketError e)
 			emit disconnected();
 			break;
 		default:
-			qDebug() << "Error on socket :(";
+			qDebug() << "Socket error: " << s->errorString();
 	}
 }
 

@@ -7,7 +7,9 @@ using namespace share :: proto;
 
 server::server(quint16 port)
 	: server_base(port)
-{}
+{
+	qDebug() << "Starting server on port " << port << " ...";
+}
 
 void server::receive(QHostAddress const & ip, quint16 port, message const & msg)
 {

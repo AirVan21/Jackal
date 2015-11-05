@@ -31,6 +31,7 @@ void server_base::accept()
 	connect(s, SIGNAL(disconnected()), this, SLOT(socket_disconnected()));
 	qDebug() << "New connection from " << s->ip_address() << ":" << s->port();
 	connections_sockets_.push_back(s);
+	qDebug() << connections_sockets_.size() << " socket in pool now.";
 }
 
 void server_base::socket_disconnected()
