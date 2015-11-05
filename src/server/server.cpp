@@ -32,6 +32,7 @@ void server::receive(QHostAddress const & ip, quint16 port, message const & msg)
 			auto response = create_message<ip_port_array_message>(
 				message_type::server_client_response, workers_ip_ports);
 			auto sock = find_socket(ip, port);
+			qDebug() << "Server: sending client" << workers_ip_ports.size() << "workers.";
 			sock->send(*response);
 			break;
 		}

@@ -7,9 +7,9 @@
 void usage()
 {
 	static QString usage_message =
-	"Usage: ./server <local-port>\n\n"
-	"Example: ./server 8080\n"
-	"This will start server on local port 8080.";
+		"Usage: ./server <local-port>\n\n"
+		"Example: ./server 8080\n"
+		"This will start server on local port 8080.";
 	qDebug() << usage_message;
 }
 

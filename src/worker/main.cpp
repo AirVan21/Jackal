@@ -5,10 +5,10 @@
 void usage()
 {
 	static QString usage_message =
-	"Usage: ./worker <server-ip> <server-port> <local-port>\n\n"
-	"Example: ./worker 127.0.0.1 8080 9090\n"
-	"This will start worker on local port 9090 connected to server which is running on 127.0.0.1:8080.\n"
-	"Note: only IPv4 is allowed to use as server-ip.";
+		"Usage: ./worker <server-ip> <server-port> <local-port>\n\n"
+		"Example: ./worker 127.0.0.1 8080 9090\n"
+		"This will start worker on local port 9090 connected to server which is running on 127.0.0.1:8080.\n"
+		"Note: only IPv4 is allowed to use as server-ip.";
 	qDebug() << usage_message;
 }
 
