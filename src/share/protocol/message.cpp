@@ -56,7 +56,7 @@ string_message::string_message(message_type type, QString const & str)
 QByteArray string_message::serialize() const
 {
 	auto const size = str_.size();
-	QByteArray bytes(1 + size, ' ');
+	QByteArray bytes(1 + size, '\0');
 	auto const type = get_type();
 	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 	memcpy(bytes.data() + 1, str_.data(), size);
@@ -86,7 +86,7 @@ number_message::number_message(message_type type, quint32 number)
 
 QByteArray number_message::serialize() const
 {
-	QByteArray bytes(5, ' ');
+	QByteArray bytes(5, '\0');
 	auto const type = get_type();
 	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 	utils::to_bytes(number_, bytes.data() + 1);
@@ -111,7 +111,7 @@ quint32 number_message::number() const
 QByteArray ip_port_array_message::serialize() const
 {
 	quint32 const size = ip_ports_.size();
-	QByteArray bytes(1 + size * 6, ' ');
+	QByteArray bytes(1 + size * 6, '\0');
 	auto const type = get_type();
 	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 	char * ip_ports_bytes = bytes.data() + 1;
@@ -160,10 +160,11 @@ chunk_message::chunk_message(message_type type, qint32 chunk_id, QByteArray cons
 
 QByteArray chunk_message::serialize() const
 {
-	QByteArray bytes(5 + size(), ' ');
+	QByteArray bytes(5, '\0');
 	auto const type = get_type();
 	utils::to_bytes(static_cast<quint8>(type), bytes.data());
 	utils::to_bytes(id_, bytes.data() + 1);
+	bytes += chunk_;
 
 	return bytes;
 }
