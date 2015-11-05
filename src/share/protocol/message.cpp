@@ -168,9 +168,10 @@ chunk_message::chunk_message(message_type type, qint32 chunk_id, QByteArray cons
 
 QByteArray chunk_message::serialize() const
 {
-	QByteArray bytes;
-	QDataStream stream(&bytes, QIODevice::WriteOnly);
-	stream << static_cast<quint8>(get_type()) << id_ << chunk_;
+    QByteArray bytes(5, '\0');
+    utils::to_bytes(static_cast<quint8>(get_type()), bytes.data());
+    utils::to_bytes(id_, bytes.data() + 1);
+    bytes += chunk_;
 
 	return bytes;
 }
