@@ -54,16 +54,16 @@ void socket::recv()
 	{
 		while (4 > socket_->bytesAvailable())
 			socket_->waitForReadyRead();
-		qDebug() << "Socket receiving message";
 		if (4 != socket_->read(read_buffer_, 4))
 		{
-			qDebug() << "Failed when reading packet size";
+			qDebug() << "Failed when reading packet size.";
 			return;
 		}
 		quint32 size = 0;
 		utils::from_bytes(read_buffer_, size);
 
 		QByteArray packet;
+		qDebug() << "Receiving" << size << "bytes.";
 		while (size > 0) {
 			while (0 == socket_->bytesAvailable())
 				socket_->waitForReadyRead();
@@ -74,7 +74,7 @@ void socket::recv()
 			qint64 bytes_read = socket_->read(read_buffer_, need_read);
 			if (bytes_read != need_read)
 			{
-				qDebug() << "Failed when reading packet size";
+				qDebug() << "Failed when reading packet block.";
 				return;
 			}
 			packet.append(read_buffer_, bytes_read);

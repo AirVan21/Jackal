@@ -29,7 +29,7 @@ public:
 	explicit server_base(quint16 port);
 	~server_base();
 
-public slots:
+protected slots:
 	virtual void accept_slot();
 	virtual void disconnected_slot();
 

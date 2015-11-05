@@ -29,19 +29,17 @@ void server_base::accept_slot()
 {
 	socket * s = new socket(nextPendingConnection(), this);
 	connect(s, SIGNAL(disconnected()), this, SLOT(disconnected_slot()));
-	qDebug() << "New connection from " << s->ip_address() << ":" << s->port();
+	qDebug() << s->ip_address() << ":" << s->port() << "connected.";
 	connections_sockets_.push_back(s);
-	qDebug() << connections_sockets_.size() << " socket in pool now.";
 }
 
 void server_base::disconnected_slot()
 {
 	auto s = static_cast<socket *>(sender());
 	socket_disconnected(s);
-	qDebug() << "Socket" << s->ip_address() << ":" << s->port() << "disconnected.";
+	qDebug() << s->ip_address() << ":" << s->port() << "disconnected.";
 	remove_socket(s);
 	delete s;
-	qDebug() << connections_sockets_.size() << " socket in pool now.";
 }
 
 socket * server_base::find_socket(QHostAddress const & ip, quint16 port)

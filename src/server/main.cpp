@@ -1,26 +1,33 @@
 #include <QCoreApplication>
 #include <QHostAddress>
 #include <QDebug>
+
 #include "server.h"
+
+void usage()
+{
+	static QString usage_message =
+	"Usage: ./server <local-port>\n\n"
+	"Example: ./server 8080\n"
+	"This will start server on local port 8080.";
+	qDebug() << usage_message;
+}
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 
-    if (argc != 2)
-    {
-        qDebug() << "Incorrect number of server arguments";
-        qDebug() << "Usage: ./server server_port_num";
-        return 1;
-    }
-    else
-    {
-        QString port_num_string(argv[1]);
-        quint16 port_num = port_num_string.toShort();
+	if (argc != 2)
+	{
+		usage();
+		return 1;
+	}
+	else
+	{
+		QString const port_str(argv[1]);
+		quint16 const port = port_str.toShort();
 
-        server s(port_num);
-        return a.exec();
-    }
-
-
+		server s(port);
+		return a.exec();
+	}
 }
