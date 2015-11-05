@@ -29,6 +29,7 @@ std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
 	switch (type) {
 		case response_ack:
 		case response_err:
+		case client_worker_request:
 			return string_message::deserialize(bytes);
 		case client_server_request:
 		case worker_server_connect:
@@ -36,7 +37,6 @@ std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
 			return number_message::deserialize(bytes);
 		case server_client_response:
 			return ip_port_array_message::deserialize(bytes);
-		case client_worker_request:
 		case worker_client_response: {
 			return chunk_message::deserialize(bytes);
 		}
@@ -47,7 +47,6 @@ std::unique_ptr<message> message::deserialize(QByteArray const & bytes)
 	return nullptr;
 }
 
-
 string_message::string_message(message_type type, QString const & str)
 	: message(type)
 	, str_(str)
@@ -55,23 +54,33 @@ string_message::string_message(message_type type, QString const & str)
 
 QByteArray string_message::serialize() const
 {
-	auto const size = str_.size();
-	QByteArray bytes(1 + size, '\0');
-	auto const type = get_type();
-	utils::to_bytes(static_cast<quint8>(type), bytes.data());
-	memcpy(bytes.data() + 1, str_.data(), size);
+//	auto const size = str_.size();
+//	QByteArray bytes(1 + size, '\0');
+//	auto const type = get_type();
+//	utils::to_bytes(static_cast<quint8>(type), bytes.data());
+	QByteArray bytes;
+	QDataStream stream(&bytes, QIODevice::ReadWrite);
+	stream << static_cast<quint8>(get_type()) << str_;
 	return bytes;
 }
 
 std::unique_ptr<message> string_message::deserialize(QByteArray const & bytes)
 {
-	quint8 tmp_type = 0;
-	utils::from_bytes(bytes, tmp_type);
-	auto const type = static_cast<message_type>(tmp_type);
-	if (message_type::response_ack != type && message_type::response_err != type)
-		assert(false && "Message type is not string");
-	QString str(bytes.data() + 1);
-	return create_message<string_message>(type, str);
+//	quint8 tmp_type = 0;
+//	utils::from_bytes(bytes, tmp_type);
+//	auto const type = static_cast<message_type>(tmp_type);
+//	if (message_type::response_ack != type && message_type::response_err != type)
+//		assert(false && "Message type is not string");
+//	QString str(bytes.data() + 1);
+
+	auto bt = const_cast<QByteArray &>(bytes);
+
+	QDataStream stream(&bt, QIODevice::ReadOnly);
+	quint8 type;
+	stream >> type;
+	QString str;
+	stream >> str;
+	return create_message<string_message>(static_cast<message_type>(type), str);
 }
 
 QString const & string_message::str() const
