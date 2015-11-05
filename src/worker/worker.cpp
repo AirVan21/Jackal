@@ -5,7 +5,7 @@
 
 worker::worker(quint16 port)
 	: server_base(port)
-	, server_socket_(nullptr, this)
+	, server_socket_(new QTcpSocket(), this)
 {}
 
 bool worker::connect_to_server(QHostAddress const & ip, quint16 port)

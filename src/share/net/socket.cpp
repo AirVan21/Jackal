@@ -19,7 +19,7 @@ socket::socket(QTcpSocket * s, message_receiver * receiver)
 }
 
 socket::socket(QHostAddress const & ip_address, quint16 port, message_receiver * receiver)
-	: socket_(std::make_unique<QTcpSocket>())
+	: socket_(std::make_unique<QTcpSocket>(nullptr))
 	, receiver_(receiver)
 {
 	connect(socket_.get(), SIGNAL(readyRead()), this, SLOT(recv()));
